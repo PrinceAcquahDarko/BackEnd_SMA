@@ -2,20 +2,21 @@ const {MongoClient, ObjectID} = require('mongodb')
 let bcrypt = require('bcryptjs')
 let jwt = require('jsonwebtoken');
 let config = require('../config');
-const url = 'mongodb://localhost:27017'
+const uri = 'mongodb+srv://Darko:gospel333@cluster0.xbklg.mongodb.net/SMA?retryWrites=true&w=majority' 
+
 const dbName = "SMA"
-const client = new MongoClient(url,  { useUnifiedTopology: true } )
+const client = new MongoClient(uri,  { useNewUrlParser: true, useUnifiedTopology: true} )
 
 function registerController(){
     async function post(req, res){
         let hashedPassword = bcrypt.hashSync(req.body.passwordGroup.password, 8);
-        let users_Data = new userData(req.body, hashedPassword)
+        let users_Data = new userData(req.body, hashedPassword) 
         try{
             await client.connect();
             const db = client.db(dbName);
             let registeredData = await db.collection('register').insertOne(users_Data)
             let token = jwt.sign({id:registeredData.ops[0]._id}, config.secret)
-            res.status(200).send({auth: true, position:registeredData.ops[0].position, token})
+            res.status(200).send({auth: true, position:registeredData.ops[0].position, token, data:registeredData.data})
             
         }catch(error){
             console.log(error)
@@ -37,11 +38,11 @@ function registerController(){
             const id2 = ObjectID(req.query.teachers_Id)
             let registeredData = await db.collection('register').updateOne({_id: id2}, { $set: { data }})
 
-            res.send(registeredData)
-            console.log(registeredData)
+            res.status(200).send(registeredData)
+           
            
         }catch(error){
-            console.log(error)
+            res.status(400).send('an error occured')
         };
 
     }
@@ -53,7 +54,6 @@ function registerController(){
             const id = ObjectID(req.query.teachers_Id)
             const data = await db.collection('register').find( {_id:id} );
             const items = await data.toArray()
-            console.log(items)
             // for temporal usage
            
             res.send(items)
@@ -67,12 +67,12 @@ function registerController(){
             const db = client.db(dbName);
             const data = await db.collection('register').find( {} );
             const items = await data.toArray()
-            console.log(items)
             // for temporal usage
            
-            res.send(items)
+            res.status(200).send(items)
+            
        }catch(err){
-           res.send(err)
+           res.status(400).send(err)
        }   
     }
 
@@ -82,11 +82,11 @@ function registerController(){
             const db = client.db(dbName);
             const id = ObjectID(req.query.staffId)
             const data = await db.collection('register').deleteOne( {_id: id} );
-            // for temporal usage
-           console.log(data)
-            res.send(data)
+     
+            res.status(200).send(data)
        }catch(err){
-           res.send(err)
+         res.status(400).send(err)
+
        }   
     }
 
@@ -125,6 +125,8 @@ function userData(args, password){
 
     return data
 }
+
+
 
 
 

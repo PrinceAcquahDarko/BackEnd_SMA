@@ -2,9 +2,10 @@ const {MongoClient} = require('mongodb')
 let bcrypt = require('bcryptjs')
 let jwt = require('jsonwebtoken')
 let config = require('../config')
-const url = 'mongodb://localhost:27017'
+const uri = 'mongodb+srv://Darko:gospel333@cluster0.xbklg.mongodb.net/SMA?retryWrites=true&w=majority' 
+
 const dbName = "SMA"
-const client = new MongoClient(url,  { useUnifiedTopology: true } )
+const client = new MongoClient(uri,  { useNewUrlParser: true, useUnifiedTopology: true } )
 
 
 function loginController(){
@@ -25,11 +26,13 @@ function loginController(){
                 res.status(200).send({auth: true, token, position:username.position, data:username.data})
             })  
         }catch(err){
-            res.sendStatus(400);
+            res.status(400).send({message: 'invalid credentitals'});
         }
     }
     return {post}
 }
+
+
 
 
 module.exports = loginController()
