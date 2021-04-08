@@ -1,16 +1,13 @@
-const {MongoClient} = require('mongodb');
-const uri = 'mongodb+srv://Darko:gospel333@cluster0.xbklg.mongodb.net/SMA?retryWrites=true&w=majority' ;
-const dbName = 'SMA';
-const client =   new MongoClient(uri,  {  useNewUrlParser: true, useUnifiedTopology: true } )
+
+const connection = require('../db/db.config')
 
 
 function adminController(){
    async function post(req, res){
        
         try{
-            await client.connect();
-            const db = client.db(dbName);
-            const insertedData = await db.collection('admin').insertOne(req.body);
+           
+            const insertedData = await connection.db.collection('admin').insertOne(req.body);
             return res.send(insertedData)
             
         }catch(err){
@@ -30,7 +27,6 @@ function adminController(){
            res.send(err)
        }   
     }
-    client.close()
     return {post, get}
 }
 

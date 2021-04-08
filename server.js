@@ -2,6 +2,11 @@ let express = require('express');
 let cors = require('cors')
 let app = express();
 
+let connection = require('./db/db.config')
+
+connection.connect()
+
+
 let loginRouter = require('./routes/loginRoutes');
 let registerRouter = require('./routes/registerRoutes');
 let adminRouter = require('./routes/adminRoutes');
