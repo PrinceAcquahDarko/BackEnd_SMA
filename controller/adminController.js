@@ -1,16 +1,10 @@
-const {MongoClient} = require('mongodb');
-const uri = 'mongodb+srv://Darko:gospel333@cluster0.xbklg.mongodb.net/SMA?retryWrites=true&w=majority' ;
-const dbName = 'SMA';
-const client =   new MongoClient(uri,  {  useNewUrlParser: true, useUnifiedTopology: true } )
-
-
-function adminController(){
+function adminController(connect){
    async function post(req, res){
        
         try{
-            await client.connect();
-            const db = client.db(dbName);
-            const insertedData = await db.collection('admin').insertOne(req.body);
+            // await client.connect();
+            // const db = client.db(dbName);
+            const insertedData = await connect.collection('admin').insertOne(req.body);
             return res.send(insertedData)
             
         }catch(err){
@@ -19,9 +13,9 @@ function adminController(){
     }
    async function get(req, res){
        try{
-        await client.connect();
-        const db = client.db(dbName); 
-            const data = await db.collection('admin').find( {} );
+        // await client.connect();
+        // const db = client.db(dbName); 
+            const data = await connect.collection('admin').find( {} );
             const items = await data.toArray()
             let schoolInfo = []
             schoolInfo.push(items[0])
@@ -35,4 +29,4 @@ function adminController(){
 }
 
 
-module.exports = adminController();
+module.exports = adminController;

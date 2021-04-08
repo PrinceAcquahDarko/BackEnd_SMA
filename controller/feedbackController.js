@@ -5,13 +5,13 @@ const dbName = 'SMA';
 const client =   new MongoClient(uri,  { useNewUrlParser: true, useUnifiedTopology: true } )
 
 
-function feedbackController(){
+function feedbackController(connect){
     async function post(req, res){
        
         try{
-            await client.connect();
-            const db = client.db(dbName);
-            const insertedData = await db.collection('feedback').insertOne(req.body);
+            // await client.connect();
+            // const db = client.db(dbName);
+            const insertedData = await connect.collection('feedback').insertOne(req.body);
             return res.send(insertedData)
             
         }catch(err){
@@ -20,9 +20,9 @@ function feedbackController(){
     }
    async function get(req, res){
        try{
-        await client.connect();
-        const db = client.db(dbName);
-            const data = await db.collection('feedback').find( {} );
+        // await client.connect();
+        // const db = client.db(dbName);
+            const data = await connect.collection('feedback').find( {} );
             const items = await data.toArray()
             res.send(items)
        }catch(err){
@@ -35,5 +35,5 @@ function feedbackController(){
 }
 
 
-module.exports = feedbackController()
+module.exports = feedbackController;
 

@@ -8,13 +8,13 @@ const dbName = "SMA"
 const client = new MongoClient(uri,  { useNewUrlParser: true, useUnifiedTopology: true } )
 
 
-function loginController(){
+function loginController(connect){
     async function post(req, res){
         let credentials = req.body
         try{
-            await client.connect();
-            const db = client.db(dbName);
-            let username = await db.collection('register').findOne({email: credentials.email})
+            // await client.connect();
+            // const db = client.db(dbName);
+            let username = await connect.collection('register').findOne({email: credentials.email})
             if(!username)
             return res.status(401).send({message: 'invalid username please try again'})
             bcrypt.compare(credentials.password, username.password, (err, isMatch) => {
@@ -35,4 +35,4 @@ function loginController(){
 
 
 
-module.exports = loginController()
+module.exports = loginController
