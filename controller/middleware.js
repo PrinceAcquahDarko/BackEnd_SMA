@@ -13,7 +13,6 @@ function position(){
     
        jwt.verify(token, config.secret, function(err, decoded){
            if(err) return res.send('incore tken');
-           console.log(decoded, 'from decoded');
            req.query.teachers_Id = decoded.id
        })
         next()
