@@ -1,8 +1,9 @@
 let express = require('express');
 let feedbackRouter= express.Router();
-let feedbackController = require('../controller/feedbackController')
 
-function router(){
+function router(connect){
+    let feedbackController = require('../controller/feedbackController')(connect)
+
     feedbackRouter.route('/')
         .post(feedbackController.post)
         .get(feedbackController.get)
@@ -10,4 +11,4 @@ function router(){
     return feedbackRouter
 }
 
-module.exports = router();
+module.exports = router;

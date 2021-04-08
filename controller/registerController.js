@@ -1,20 +1,16 @@
-const {MongoClient, ObjectID} = require('mongodb')
 let bcrypt = require('bcryptjs')
 let jwt = require('jsonwebtoken');
 let config = require('../config');
-const uri = 'mongodb+srv://Darko:gospel333@cluster0.xbklg.mongodb.net/SMA?retryWrites=true&w=majority' 
 
-const dbName = "SMA"
-const client = new MongoClient(uri,  { useNewUrlParser: true, useUnifiedTopology: true} )
 
-function registerController(){
+
+function registerController(connect){
     async function post(req, res){
         let hashedPassword = bcrypt.hashSync(req.body.passwordGroup.password, 8);
         let users_Data = new userData(req.body, hashedPassword) 
         try{
-            await client.connect();
-            const db = client.db(dbName);
-            let registeredData = await db.collection('register').insertOne(users_Data)
+
+            let registeredData = await connect.collection('register').insertOne(users_Data)
             let token = jwt.sign({id:registeredData.ops[0]._id}, config.secret)
             res.status(200).send({auth: true, position:registeredData.ops[0].position, token, data:registeredData.data})
             
@@ -32,11 +28,9 @@ function registerController(){
      async function update(req, res){
         try{
 
-            await client.connect();
-            const db = client.db(dbName);
             const data = req.body
             const id2 = ObjectID(req.query.teachers_Id)
-            let registeredData = await db.collection('register').updateOne({_id: id2}, { $set: { data }})
+            let registeredData = await connect.collection('register').updateOne({_id: id2}, { $set: { data }})
 
             res.status(200).send(registeredData)
            
@@ -49,10 +43,9 @@ function registerController(){
 
     async function get(req, res){
         try{
-            await client.connect();
-            const db = client.db(dbName);
+
             const id = ObjectID(req.query.teachers_Id)
-            const data = await db.collection('register').find( {_id:id} );
+            const data = await connect.collection('register').find( {_id:id} );
             const items = await data.toArray()
             // for temporal usage
            
@@ -63,9 +56,7 @@ function registerController(){
     }
     async function getAllData(req, res){
         try{
-            await client.connect();
-            const db = client.db(dbName);
-            const data = await db.collection('register').find( {} );
+            const data = await connect.collection('register').find( {} );
             const items = await data.toArray()
             // for temporal usage
            
@@ -78,10 +69,9 @@ function registerController(){
 
     async function deleteStaff(req, res){
         try{
-            await client.connect();
-            const db = client.db(dbName);
+    
             const id = ObjectID(req.query.staffId)
-            const data = await db.collection('register').deleteOne( {_id: id} );
+            const data = await connect.collection('register').deleteOne( {_id: id} );
      
             res.status(200).send(data)
        }catch(err){
@@ -131,4 +121,4 @@ function userData(args, password){
 
 
 
-module.exports = registerController()
+module.exports = registerController;

@@ -1,16 +1,10 @@
-const {MongoClient, ObjectID} = require('mongodb')
-const uri = 'mongodb+srv://Darko:gospel333@cluster0.xbklg.mongodb.net/SMA?retryWrites=true&w=majority' 
 
-const dbName = "SMA"
-const client = new MongoClient(uri,  { useNewUrlParser: true, useUnifiedTopology: true } )
-
-function studentsController(){
+function studentsController(connect){
     async function get(req, res){
         let data = req.query.class;
         try{
-            await client.connect();
-            const db = client.db(dbName);
-            let studentsData = await db.collection(data).find({})
+        
+            let studentsData = await connect.collection(data).find({})
             const items = await studentsData.toArray()
             res.status(200).send(items)
 
@@ -24,14 +18,11 @@ function studentsController(){
         let data = req.query.class;
         req.body.grandScore = 0;
         try{
-            await client.connect();
-            const db = client.db(dbName);
-            let studentsData = await db.collection(data).insertOne(req.body)
-            console.log(studentsData);
+    
+            let studentsData = await connect.collection(data).insertOne(req.body)
             res.status(200).send(studentsData)
 
         }catch(err){
-            console.log(err)
             res.status(400).send(err)
 
         }
@@ -40,10 +31,9 @@ function studentsController(){
     async function deleteStudent(req, res){
         let queryClass = req.query.class
         try{
-            await client.connect();
-            const db = client.db(dbName);
+ 
             const id = ObjectID(req.query.deletedId)
-            const data = await db.collection(queryClass).deleteOne( {_id: id} );
+            const data = await connect.collection(queryClass).deleteOne( {_id: id} );
             // for temporal usage
             res.status(200).send(data)
 
@@ -57,10 +47,9 @@ function studentsController(){
         let queryClass = req.query.class;
         updatedStudent = req.body
         try{
-            await client.connect();
-            const db = client.db(dbName);
+
             const id = ObjectID(req.query.updatedId)
-            const data = await db.collection(queryClass).updateOne({_id: id}, { $set: {
+            const data = await connect.collection(queryClass).updateOne({_id: id}, { $set: {
                 firstname: updatedStudent.firstname, 
                 lastname: updatedStudent.lastname, 
                 gender: updatedStudent.gender,
@@ -82,20 +71,19 @@ function studentsController(){
         let status = req.query.status
         let id = ObjectID(req.query.id)
         try{
-            await client.connect();
-            const db = client.db(dbName);
-            const UsersId = await db.collection('register').findOne({_id: ObjectID(req.query.teachers_Id)})
+    
+            const UsersId = await connect.collection('register').findOne({_id: ObjectID(req.query.teachers_Id)})
             if (UsersId.position === 'teacher'){
-                let score = await db.collection(currentClass).findOne({_id: id})
+                let score = await connect.collection(currentClass).findOne({_id: id})
                 if(status === 'add'){
                     let cummulative_score = score.grandScore + req.body.totalScore
-                    let insertedMarks = await db.collection(currentClass).updateOne({_id: id}, {$set: {[subject]:  {classScore: req.body.classScore, examScore: req.body.examScore, totalScore: req.body.totalScore}, grandScore: cummulative_score} } ) 
+                    let insertedMarks = await connect.collection(currentClass).updateOne({_id: id}, {$set: {[subject]:  {classScore: req.body.classScore, examScore: req.body.examScore, totalScore: req.body.totalScore}, grandScore: cummulative_score} } ) 
                    return res.status(200).send(insertedMarks)
 
                 }
                     let commulative_score = score.grandScore - score[subject].totalScore
                     let updatedScore = commulative_score + req.body.totalScore
-                    let insertedMarks = await db.collection(currentClass).updateOne({_id: id}, {$set: {[subject]:  {classScore: req.body.classScore, examScore: req.body.examScore, totalScore: req.body.totalScore}, grandScore: updatedScore} } ) 
+                    let insertedMarks = await connect.collection(currentClass).updateOne({_id: id}, {$set: {[subject]:  {classScore: req.body.classScore, examScore: req.body.examScore, totalScore: req.body.totalScore}, grandScore: updatedScore} } ) 
                     return res.status(200).send(insertedMarks)
 
               
@@ -115,11 +103,10 @@ function studentsController(){
         let currentClass = req.query.class;
         let id = ObjectID(req.query.id)
         try{
-            await client.connect();
-            const db = client.db(dbName);
-            const UsersId = await db.collection('register').findOne({_id: ObjectID(req.query.teachers_Id)})
+
+            const UsersId = await connect.collection('register').findOne({_id: ObjectID(req.query.teachers_Id)})
             if (UsersId.position === 'account'){
-                let insertedFees = await db.collection(currentClass).updateOne({_id: id}, {$set: {fees: req.body}} ) 
+                let insertedFees = await connect.collection(currentClass).updateOne({_id: id}, {$set: {fees: req.body}} ) 
                 return res.status(200).send(insertedFees);
             }
             
@@ -144,4 +131,4 @@ function marks(args){
     }
 }
 
-module.exports = studentsController();
+module.exports = studentsController;
