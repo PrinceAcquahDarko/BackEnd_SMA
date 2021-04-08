@@ -14,9 +14,8 @@ function feedbackController(){
     }
    async function get(req, res){
        try{
-        await client.connect();
-        const db = client.db(dbName);
-            const data = await db.collection('feedback').find( {} );
+      
+            const data = await connection.db.collection('feedback').find( {} );
             const items = await data.toArray()
             res.send(items)
        }catch(err){
