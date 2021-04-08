@@ -1,5 +1,4 @@
 const connection = require('../db/db.config')
-
 function studentsController(){
     async function get(req, res){
         let data = req.query.class;
@@ -75,16 +74,16 @@ function studentsController(){
    
             const UsersId = await connection.db.collection('register').findOne({_id: ObjectID(req.query.teachers_Id)})
             if (UsersId.position === 'teacher'){
-                let score = await db.collection(currentClass).findOne({_id: id})
+                let score = await connection.db.collection(currentClass).findOne({_id: id})
                 if(status === 'add'){
                     let cummulative_score = score.grandScore + req.body.totalScore
-                    let insertedMarks = await db.collection(currentClass).updateOne({_id: id}, {$set: {[subject]:  {classScore: req.body.classScore, examScore: req.body.examScore, totalScore: req.body.totalScore}, grandScore: cummulative_score} } ) 
+                    let insertedMarks = await connection.db.collection(currentClass).updateOne({_id: id}, {$set: {[subject]:  {classScore: req.body.classScore, examScore: req.body.examScore, totalScore: req.body.totalScore}, grandScore: cummulative_score} } ) 
                    return res.status(200).send(insertedMarks)
 
                 }
                     let commulative_score = score.grandScore - score[subject].totalScore
                     let updatedScore = commulative_score + req.body.totalScore
-                    let insertedMarks = await db.collection(currentClass).updateOne({_id: id}, {$set: {[subject]:  {classScore: req.body.classScore, examScore: req.body.examScore, totalScore: req.body.totalScore}, grandScore: updatedScore} } ) 
+                    let insertedMarks = await connection.db.collection(currentClass).updateOne({_id: id}, {$set: {[subject]:  {classScore: req.body.classScore, examScore: req.body.examScore, totalScore: req.body.totalScore}, grandScore: updatedScore} } ) 
                     return res.status(200).send(insertedMarks)
 
               
@@ -107,7 +106,7 @@ function studentsController(){
            
             const UsersId = await connection.db.collection('register').findOne({_id: ObjectID(req.query.teachers_Id)})
             if (UsersId.position === 'account'){
-                let insertedFees = await db.collection(currentClass).updateOne({_id: id}, {$set: {fees: req.body}} ) 
+                let insertedFees = await connection.db.collection(currentClass).updateOne({_id: id}, {$set: {fees: req.body}} ) 
                 return res.status(200).send(insertedFees);
             }
             
@@ -117,7 +116,6 @@ function studentsController(){
             return res.status(400).send(err)
         }
     }
-
     return {get, post, postMarks, postfees, deleteStudent, updateStudent}
 }
 
