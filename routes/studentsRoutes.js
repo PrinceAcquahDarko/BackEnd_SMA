@@ -1,9 +1,9 @@
 let express = require('express');
 let studentsRouter = express.Router();
+let studentsController = require('../controller/studentsController')
 let position = require('../controller/middleware')
 
-function router(connect){
-    let studentsController = require('../controller/studentsController')(connect)
+function router(){
     studentsRouter.route('/')
         .get(studentsController.get)
         .post(studentsController.post)
@@ -22,4 +22,4 @@ function router(connect){
     return studentsRouter
 }
 
-module.exports = router;
+module.exports = router();

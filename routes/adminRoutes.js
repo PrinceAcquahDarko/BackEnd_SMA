@@ -1,9 +1,9 @@
 let express = require('express');
 let adminRouter = express.Router();
+let adminController = require('../controller/adminController')
 let position = require('../controller/middleware')
 
-function router(connect){
-    let adminController = require('../controller/adminController')(connect)
+function router(){
     adminRouter.route('/')
         .post(position.authorize, adminController.post)
         .get(adminController.get)
@@ -11,4 +11,4 @@ function router(connect){
     return adminRouter
 }
 
-module.exports = router;
+module.exports = router();

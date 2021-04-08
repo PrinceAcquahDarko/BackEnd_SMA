@@ -1,9 +1,17 @@
+const {MongoClient} = require('mongodb');
+const uri = 'mongodb+srv://Darko:gospel333@cluster0.xbklg.mongodb.net/SMA?retryWrites=true&w=majority' 
 
-function feedbackController(connect){
+const dbName = 'SMA';
+const client =   new MongoClient(uri,  { useNewUrlParser: true, useUnifiedTopology: true } )
+
+
+function feedbackController(){
     async function post(req, res){
        
         try{
-            const insertedData = await connect.collection('feedback').insertOne(req.body);
+            await client.connect();
+            const db = client.db(dbName);
+            const insertedData = await db.collection('feedback').insertOne(req.body);
             return res.send(insertedData)
             
         }catch(err){
@@ -12,20 +20,20 @@ function feedbackController(connect){
     }
    async function get(req, res){
        try{
-            const data = await connect.collection('feedback').find( {} );
+        await client.connect();
+        const db = client.db(dbName);
+            const data = await db.collection('feedback').find( {} );
             const items = await data.toArray()
             res.send(items)
        }catch(err){
            res.send(err)
        }   
     }
-
-
     client.close()
     return {post, get}
 
 }
 
 
-module.exports = feedbackController;
+module.exports = feedbackController()
 
