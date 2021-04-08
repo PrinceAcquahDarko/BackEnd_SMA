@@ -1,15 +1,9 @@
-const {MongoClient, ObjectID} = require('mongodb')
-const uri = 'mongodb+srv://Darko:gospel333@cluster0.xbklg.mongodb.net/SMA?retryWrites=true&w=majority' 
-
-const dbName = "SMA"
-const client = new MongoClient(uri,  { useNewUrlParser: true, useUnifiedTopology: true } )
 
 function studentsController(connect){
     async function get(req, res){
         let data = req.query.class;
         try{
-            // await client.connect();
-            // const db = client.db(dbName);
+        
             let studentsData = await connect.collection(data).find({})
             const items = await studentsData.toArray()
             res.status(200).send(items)
@@ -24,8 +18,7 @@ function studentsController(connect){
         let data = req.query.class;
         req.body.grandScore = 0;
         try{
-            // await client.connect();
-            // const db = client.db(dbName);
+    
             let studentsData = await connect.collection(data).insertOne(req.body)
             res.status(200).send(studentsData)
 
@@ -38,8 +31,7 @@ function studentsController(connect){
     async function deleteStudent(req, res){
         let queryClass = req.query.class
         try{
-            // await client.connect();
-            // const db = client.db(dbName);
+ 
             const id = ObjectID(req.query.deletedId)
             const data = await connect.collection(queryClass).deleteOne( {_id: id} );
             // for temporal usage
@@ -55,8 +47,7 @@ function studentsController(connect){
         let queryClass = req.query.class;
         updatedStudent = req.body
         try{
-            // await client.connect();
-            // const db = client.db(dbName);
+
             const id = ObjectID(req.query.updatedId)
             const data = await connect.collection(queryClass).updateOne({_id: id}, { $set: {
                 firstname: updatedStudent.firstname, 
@@ -80,8 +71,7 @@ function studentsController(connect){
         let status = req.query.status
         let id = ObjectID(req.query.id)
         try{
-            // await client.connect();
-            // const db = client.db(dbName);
+    
             const UsersId = await connect.collection('register').findOne({_id: ObjectID(req.query.teachers_Id)})
             if (UsersId.position === 'teacher'){
                 let score = await connect.collection(currentClass).findOne({_id: id})
@@ -113,8 +103,7 @@ function studentsController(connect){
         let currentClass = req.query.class;
         let id = ObjectID(req.query.id)
         try{
-            // await client.connect();
-            // const db = client.db(dbName);
+
             const UsersId = await connect.collection('register').findOne({_id: ObjectID(req.query.teachers_Id)})
             if (UsersId.position === 'account'){
                 let insertedFees = await connect.collection(currentClass).updateOne({_id: id}, {$set: {fees: req.body}} ) 

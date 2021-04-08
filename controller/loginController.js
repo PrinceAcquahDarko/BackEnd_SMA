@@ -1,19 +1,12 @@
-const {MongoClient} = require('mongodb')
 let bcrypt = require('bcryptjs')
 let jwt = require('jsonwebtoken')
 let config = require('../config')
-const uri = 'mongodb+srv://Darko:gospel333@cluster0.xbklg.mongodb.net/SMA?retryWrites=true&w=majority' 
-
-const dbName = "SMA"
-const client = new MongoClient(uri,  { useNewUrlParser: true, useUnifiedTopology: true } )
 
 
 function loginController(connect){
     async function post(req, res){
         let credentials = req.body
         try{
-            // await client.connect();
-            // const db = client.db(dbName);
             let username = await connect.collection('register').findOne({email: credentials.email})
             if(!username)
             return res.status(401).send({message: 'invalid username please try again'})

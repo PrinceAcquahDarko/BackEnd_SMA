@@ -2,8 +2,6 @@ function adminController(connect){
    async function post(req, res){
        
         try{
-            // await client.connect();
-            // const db = client.db(dbName);
             const insertedData = await connect.collection('admin').insertOne(req.body);
             return res.send(insertedData)
             
@@ -13,8 +11,6 @@ function adminController(connect){
     }
    async function get(req, res){
        try{
-        // await client.connect();
-        // const db = client.db(dbName); 
             const data = await connect.collection('admin').find( {} );
             const items = await data.toArray()
             let schoolInfo = []
