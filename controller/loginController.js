@@ -29,6 +29,8 @@ function loginController(){
             res.status(400).send({message: 'invalid credentitals'});
         }
     }
+
+    client.close()
     return {post}
 }
 

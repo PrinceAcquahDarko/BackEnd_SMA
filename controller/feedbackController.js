@@ -30,6 +30,8 @@ function feedbackController(){
        }   
     }
 
+
+    client.close()
     return {post, get}
 
 }

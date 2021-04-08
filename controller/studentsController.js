@@ -130,6 +130,7 @@ function studentsController(){
         }
     }
 
+    client.close()
     return {get, post, postMarks, postfees, deleteStudent, updateStudent}
 }
 

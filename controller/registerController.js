@@ -110,6 +110,7 @@ function registerController(){
            
     }
 
+    client.close()
     return {post, validate, update, get, authorization, getAllData, deleteStaff}
 }
 

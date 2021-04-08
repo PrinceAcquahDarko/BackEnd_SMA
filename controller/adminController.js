@@ -31,6 +31,7 @@ function adminController(){
        }   
     }
 
+    client.close()
     return {post, get}
 }
 
